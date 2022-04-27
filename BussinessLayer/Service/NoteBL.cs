@@ -1,5 +1,6 @@
 ﻿using BussinessLayer.Interface;
 using CommonDatabaseLayer;
+using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
@@ -27,5 +28,17 @@ namespace BussinessLayer.Service
                     throw ex;
                 }
             }
+
+        public async Task<Note> GetNote(int noteId, int userId)
+        {
+            try
+            {
+                return await this.noteRL.GetNote(noteId, userId); 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
+    }
 }

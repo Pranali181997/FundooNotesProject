@@ -1,4 +1,5 @@
 ﻿using CommonDatabaseLayer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RepositoryLayer.Entity;
 using RepositoryLayer.FundooNoteContex;
@@ -41,10 +42,22 @@ namespace RepositoryLayer.Service
                 note.IsReminder = false;
                 note.IsPin = false;
                 note.IsTrash = false;
-                note.ModifiedDate = DateTime.Now;
+                note.RegisterdDate = DateTime.Now;
 
                 fundoo.Add(note);
                 await fundoo.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<Note> GetNote(int noteId, int userId)
+        {
+            try
+            {
+                return await fundoo.Note.Where(u => u.NoteId == noteId && u.UserId == userId)
+                .Include(u => u.User).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
