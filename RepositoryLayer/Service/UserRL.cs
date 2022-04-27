@@ -208,6 +208,43 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                var result = fundoo.Users.ToList();
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public bool DeleteUser(string email)
+        {
+            // throw new NotImplementedException();
+            try
+            {
+                var result = fundoo.Users.Where(e => e.Email == email).FirstOrDefault();
+
+                if (result != null)
+                {
+                    fundoo.Users.Remove(result);
+                    fundoo.SaveChanges();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
-}
+}   
 

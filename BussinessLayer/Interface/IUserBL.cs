@@ -1,4 +1,5 @@
 ﻿using CommonDatabaseLayer;
+using RepositoryLayer.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,5 +12,7 @@ namespace BussinessLayer.Interface
         public string LoginUser(string Email, string Password);
         public bool ForgetPassword(string Email);
         public bool ChangePassword(string email, string password, string confirmPassword);
+        public bool DeleteUser(string email);
+        List<User> GetAllUsers();
     }
 }

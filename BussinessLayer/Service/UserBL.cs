@@ -1,5 +1,6 @@
 ﻿using BussinessLayer.Interface;
 using CommonDatabaseLayer;
+using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,29 @@ namespace BussinessLayer.Service
             try
             {
                 return userRL.ChangePassword(Email, password, newpassword);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                return userRL.GetAllUsers();
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public bool DeleteUser(string email)
+        {
+            try
+            {
+                return userRL.DeleteUser(email);
             }
             catch (Exception ex)
             {
