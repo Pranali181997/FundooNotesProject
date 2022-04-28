@@ -92,12 +92,10 @@ namespace FundooNoteProject.Controllers
         {
             try
             {
-                //var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
                 var currentUser = HttpContext.User;
                 int userId = Convert.ToInt32(currentUser.Claims.FirstOrDefault(c => c.Type == "UserId").Value);
                 var email = (currentUser.Claims.FirstOrDefault(c => c.Type == "Email").Value);
-                //var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
-                //int userId = Int32.Parse(userid.Value);
+
                 bool res = userBL.ChangePassword(email, password, confirmpassword);
 
                 if (!res)
@@ -127,7 +125,22 @@ namespace FundooNoteProject.Controllers
             {
                 throw e;
             }
+        }
+        [HttpDelete("Delete")]
+        public ActionResult DeleteUser(string email)
+        {
+            try
+            {
+                if (userBL.DeleteUser(email))
+                    return this.Ok(new { Success = true, message = "User deleted successful", data = userBL.DeleteUser(email) });
+                else
+                    return this.BadRequest(new { Success = false, message = "User not deleted " });
+            }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
         }
     }
 }

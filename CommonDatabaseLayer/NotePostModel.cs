@@ -7,10 +7,16 @@ namespace CommonDatabaseLayer
 {
     public class NotePostModel
     {
-        [Required]
+        [Required(ErrorMessage = "Title is required.")]
+        [RegularExpression("^[A-Z][a-z]{5,}", ErrorMessage = "Title should start with capital letters and" +
+            "should contain atleast 5 characters.")]
+        [DataType(DataType.Text)]
         public string Title { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Description is required.")]
+        [RegularExpression("^[A-Z][a-z]{5,}", ErrorMessage = "escription should start with capital letters and" +
+            "should contain atleast 5 characters.")]
+        [DataType(DataType.Text)]
         public string Description { get; set; }
 
         [Required]
