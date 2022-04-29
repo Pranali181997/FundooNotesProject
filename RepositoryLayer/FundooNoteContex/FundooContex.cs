@@ -15,13 +15,29 @@ namespace RepositoryLayer.FundooNoteContex
         }
         public DbSet<Entity.User> Users { get; set; }
         public DbSet<Note> Note { get; set; }
+        public DbSet<Label> lable { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             modelBuilder.Entity<Entity.User>()
             .HasIndex(u => u.Email)
             .IsUnique();
+
+
+            //modelBuilder.Entity<Label>()
+            //    .HasKey(bc => new { bc.UserId, bc.NoteId });
+            //modelBuilder.Entity<Label>()
+            //    .HasOne(bc => bc.User)
+            //    .WithMany(b => b.label)
+            //    .HasForeignKey(bc => bc.UserId);
+            //modelBuilder.Entity<Label>()
+            //    .HasOne(bc => bc.Note)
+            //    .WithMany(c => c.label)
+            //    .HasForeignKey(bc => bc.NoteId);
+
+
         }
+
         public override int SaveChanges()
         {
             var entries = ChangeTracker

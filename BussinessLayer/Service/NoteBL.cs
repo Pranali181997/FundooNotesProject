@@ -12,9 +12,9 @@ namespace BussinessLayer.Service
     public class NoteBL : INoteBL
     {
         INoteRL noteRL;
-        public NoteBL(INoteRL userRL)
+        public NoteBL(INoteRL noteRL)
         {
-            this.noteRL = userRL;
+            this.noteRL = noteRL;
         }
         public async Task AddNote(NotePostModel notePostModel, int userId)
         {

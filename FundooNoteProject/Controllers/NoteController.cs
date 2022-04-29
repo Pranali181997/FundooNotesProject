@@ -53,7 +53,7 @@ namespace FundooNoteProject.Controllers
             {
                 throw ex;
             }
-        } 
+        }  
         [Authorize]
         [HttpGet("GetAllNotes")]
         public async Task<ActionResult> GetAllNotes()
@@ -62,8 +62,7 @@ namespace FundooNoteProject.Controllers
             {
                 var userid = User.Claims.FirstOrDefault(x => x.Type.ToString().Equals("userId", StringComparison.InvariantCultureIgnoreCase));
                 int userId = Int32.Parse(userid.Value);
-                List<Note> result = new List<Note>();
-                result = await this.noteBL.GetAllNote(userId);
+                List<Note> result = await noteBL.GetAllNote(userId);
                 return this.Ok(new { success = true, message = $"Below are all notes", data = result });
             }
             catch (Exception ex)

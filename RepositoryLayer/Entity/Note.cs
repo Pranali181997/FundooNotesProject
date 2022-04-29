@@ -21,6 +21,8 @@ namespace RepositoryLayer.Entity
             public bool IsArchive { get; set; }
             public bool IsReminder { get; set; }
             public bool IsPin { get; set; }
-            public bool IsTrash { get; set; }   
+            public bool IsTrash { get; set; }
+
+            public virtual ICollection<Label> label { get; set; }
     }
 }

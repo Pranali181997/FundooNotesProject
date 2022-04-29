@@ -21,11 +21,11 @@ namespace RepositoryLayer.Entity
         public string Email { get; set; }
 
         public string Password { get; set; }
-
+        public virtual ICollection<Label> label { get; set; }
     }
         public class BaseEntity
         {
             public DateTime RegisterdDate { get; set; }
             public DateTime ModifiedDate { get; set; }
-        }
-    }
+        }  
+}
