@@ -55,6 +55,33 @@ namespace RepositoryLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Collabs",
+                columns: table => new
+                {
+                    CollabId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CollabEmail = table.Column<string>(nullable: true),
+                    userId = table.Column<int>(nullable: true),
+                    NoteId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Collabs", x => x.CollabId);
+                    table.ForeignKey(
+                        name: "FK_Collabs_Note_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Note",
+                        principalColumn: "NoteId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Collabs_Users_userId",
+                        column: x => x.userId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "lable",
                 columns: table => new
                 {
@@ -82,6 +109,16 @@ namespace RepositoryLayer.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Collabs_NoteId",
+                table: "Collabs",
+                column: "NoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Collabs_userId",
+                table: "Collabs",
+                column: "userId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_lable_NoteId",
                 table: "lable",
                 column: "NoteId");
@@ -106,6 +143,9 @@ namespace RepositoryLayer.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Collabs");
+
             migrationBuilder.DropTable(
                 name: "lable");
 

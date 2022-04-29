@@ -11,14 +11,15 @@ namespace RepositoryLayer.Entity
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CollabId{ get; set; }
-        public string CollabName { get; set; }
-        [ForeignKey("Note")]
-        public int? NotesId { get; set; }
-        public virtual Note Note { get; set; }
-
+        public string CollabEmail { get; set; }
 
         [ForeignKey("User")]
-        public int? UserId { get; set; }
+        public int? userId { get; set; }
         public virtual User User { get; set; }
+
+        [ForeignKey("Note")]
+        public int? NoteId { get; set; }
+        public virtual Note Note { get; set; }
+
     }
 }

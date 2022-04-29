@@ -1,17 +1,18 @@
-﻿using CommonDatabaseLayer;
+﻿using BussinessLayer.Service;
+using CommonDatabaseLayer;
 using RepositoryLayer.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RepositoryLayer.Interface
+namespace BussinessLayer.Interface
 {
-   public interface ICollabRL
+   public interface ICollabBL
     {
         Task<Collab> AddCollab(int userId, int NoteId, CollabPostModel collabPostModel);
         Task<bool> RemoveCollaborator(int userId, int NoteId, int collaboratorId);
-        Task<List<Collab>> GetCollaboratorByUserId(int userId);
-        Task<List<Collab>> GetCollaboratorByNoteId(int userId, int NoteId);
+        Task<List<RepositoryLayer.Entity.Collab>> GetCollaboratorByUserId(int userId);
+        Task<List<RepositoryLayer.Entity.Collab>> GetCollaboratorByNoteId(int userId, int NoteId);
     }
 }

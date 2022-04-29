@@ -26,20 +26,20 @@ namespace RepositoryLayer.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CollabName")
+                    b.Property<string>("CollabEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NotesId")
+                    b.Property<int?>("NoteId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int?>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("CollabId");
 
-                    b.HasIndex("NotesId");
+                    b.HasIndex("NoteId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("Collabs");
                 });
@@ -154,11 +154,11 @@ namespace RepositoryLayer.Migrations
                 {
                     b.HasOne("RepositoryLayer.Entity.Note", "Note")
                         .WithMany()
-                        .HasForeignKey("NotesId");
+                        .HasForeignKey("NoteId");
 
                     b.HasOne("RepositoryLayer.Entity.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("userId");
                 });
 
             modelBuilder.Entity("RepositoryLayer.Entity.Label", b =>
