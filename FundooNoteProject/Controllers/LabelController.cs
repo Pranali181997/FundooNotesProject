@@ -3,13 +3,17 @@ using CommonDatabaseLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 using RepositoryLayer.FundooNoteContex;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+
 
 namespace FundooNoteProject.Controllers
 {
@@ -19,10 +23,15 @@ namespace FundooNoteProject.Controllers
     {
         ILabelBL labelBL;
         FundooContext fundoo;
-        public LabelController(ILabelBL lableBL, FundooContext fundoo)
+        private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
+        private string keyName = "Pranali";
+        public LabelController(ILabelBL lableBL, FundooContext fundoo, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.labelBL = lableBL;
             this.fundoo = fundoo;
+            this.memoryCache=memoryCache;
+            this.distributedCache = distributedCache;
         }
         [Authorize]
         [HttpPost("AddNote")]
@@ -136,6 +145,37 @@ namespace FundooNoteProject.Controllers
                     return this.BadRequest(new { success = true, message = "Failed to get label" });
                 }
                 return this.Ok(new { success = true, message = $"Label get successfully", data = list});
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpGet("GetlabelByRedisCache")]
+        public async Task<ActionResult> GetlabelByRedisCache()
+        {
+            try
+            {
+                string serializeLabelList;
+                var labelList = new List<RepositoryLayer.Entity.Label>();
+                var redisLabelList = await distributedCache.GetAsync(keyName);
+                if (redisLabelList != null)
+                {
+                    serializeLabelList = Encoding.UTF8.GetString(redisLabelList);
+                    labelList = JsonConvert.DeserializeObject<List<RepositoryLayer.Entity.Label>>(serializeLabelList);
+                }
+                else
+                {
+                    labelList = await this.labelBL.GetlabelByRedisCache();
+                    serializeLabelList = JsonConvert.SerializeObject(labelList);
+                    redisLabelList = Encoding.UTF8.GetBytes(serializeLabelList);
+                    var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                    await distributedCache.SetAsync(keyName, redisLabelList, options);
+                }
+                var result = this.Ok(new { success = true, message = $"Get note successful!!!", data = labelList });
+                return result;
             }
             catch (Exception ex)
             {

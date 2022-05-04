@@ -8,6 +8,8 @@ namespace RepositoryLayer.Entity
 {
     public class Collab
     {
+        internal object lable;
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CollabId{ get; set; }

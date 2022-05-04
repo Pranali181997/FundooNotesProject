@@ -64,6 +64,18 @@ namespace BussinessLayer.Service
                 throw ex;
             }
         }
+        public async Task<List<Collab>> GetCollaboratorByRedisCache()
+        {
+            try
+            {
+                return await this.IcollabRL.GetCollaboratorByRedisCache();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
 

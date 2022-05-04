@@ -15,5 +15,6 @@ namespace RepositoryLayer.Interface
         Task DeleteLabel(int LabelId, int userId);
         Task<List<Entity.Label>> Getlabel(int userId);
         Task<List<Entity.Label>> GetlabelByNoteId(int NoteId);
+        Task<List<Entity.Label>> GetlabelByRedisCache();
     }
 }

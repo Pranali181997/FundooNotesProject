@@ -15,6 +15,7 @@ namespace RepositoryLayer.Service
     public class LabelRL : ILabelRL
     {
         FundooContext fundoo;
+        
         public IConfiguration Configuration { get; }
         public LabelRL(FundooContext fundoo, IConfiguration configuration)
         {
@@ -105,6 +106,18 @@ namespace RepositoryLayer.Service
             try
             {
                 List<Entity.Label> reuslt = await fundoo.lable.Where(u => u.NoteId == NoteId).Include(u => u.User).Include(u => u.Note).ToListAsync();
+                return reuslt;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<List<Entity.Label>> GetlabelByRedisCache()
+        {
+            try
+            {
+                List<Entity.Label> reuslt = await fundoo.lable.ToListAsync();
                 return reuslt;
             }
             catch (Exception ex)

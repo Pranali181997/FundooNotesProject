@@ -57,7 +57,7 @@ namespace RepositoryLayer.Service
             try
             {
                 return await fundoo.Note.Where(u => u.NoteId == noteId && u.UserId == userId)
-                .Include(u => u.User).FirstOrDefaultAsync();
+                .Include(u => u.User).Include(u=>u.label).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                return await fundoo.Note.Where(u => u.UserId == userId).Include(u => u.User).ToListAsync();               
+                return await fundoo.Note.Where(u => u.UserId == userId).Include(u => u.User).Include(u => u.label).ToListAsync();               
             }
             catch (Exception e)
             {
@@ -223,6 +223,16 @@ namespace RepositoryLayer.Service
             }
 
         }
-
+        public async Task<List<Note>> GetAllNotes_ByRadisCache()
+        {
+            try
+            {
+                return await fundoo.Note.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }

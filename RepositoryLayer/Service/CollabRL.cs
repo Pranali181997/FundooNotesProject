@@ -69,7 +69,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                List<Collab> result = await fundoo.Collabs.Where(u => u.userId == userId).Include(u => u.User).Include(U => U.Note).ToListAsync();
+                List<Collab> result = await fundoo.Collabs.Where(u => u.userId == userId).Include(u => u.User).Include(u => u.Note).Include(u => u.User).ToListAsync();
                 return result;
             }
             catch (Exception ex)
@@ -90,7 +90,18 @@ namespace RepositoryLayer.Service
             {
                 throw ex;
             }
-
+        }
+        public async Task<List<Collab>> GetCollaboratorByRedisCache()
+        {
+            try
+            {
+                List<Collab> result = await fundoo.Collabs.ToListAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

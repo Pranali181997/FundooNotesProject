@@ -86,5 +86,17 @@ namespace BussinessLayer.Service
                 throw ex;
             }
         }
+        public async Task<List<RepositoryLayer.Entity.Label>> GetlabelByRedisCache()
+        {
+            try
+            {
+                return await this.IlabelRL.GetlabelByRedisCache();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }        
+        }
     }
 }

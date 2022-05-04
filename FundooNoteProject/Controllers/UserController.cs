@@ -2,11 +2,16 @@
 using CommonDatabaseLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RepositoryLayer.Entity;
 using RepositoryLayer.FundooNoteContex;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FundooNoteProject.Controllers
 {
@@ -18,10 +23,15 @@ namespace FundooNoteProject.Controllers
         //instance variable
         IUserBL userBL;
         FundooContext fundoo;
-        public UserController(IUserBL userBL, FundooContext fundoo)
+        private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
+        private string keyName = "Pranali";
+        public UserController(IUserBL userBL, FundooContext fundoo,IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.userBL = userBL;
             this.fundoo = fundoo;
+            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
         }
         [HttpPost("Register")]
         public ActionResult RegisterUser(UserPostModel user)
@@ -140,6 +150,36 @@ namespace FundooNoteProject.Controllers
             {
 
                 throw ex;
+            }
+        }
+        [HttpGet("getallusers_Radis")]
+        public ActionResult GetAllUsers_Redis()
+        {
+            try
+            {
+                string serializeUserList;
+                var userList = new List<User>();
+                var redisUserList = distributedCache.Get(keyName);
+                if (redisUserList != null)
+                {
+                    serializeUserList = Encoding.UTF8.GetString(redisUserList);
+                    userList = JsonConvert.DeserializeObject<List<User>>(serializeUserList);
+                }
+                else
+                {
+                    userList = this.userBL.GetAllUsers();
+                    serializeUserList = JsonConvert.SerializeObject(userList);
+                    redisUserList = Encoding.UTF8.GetBytes(serializeUserList);
+                    var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                     distributedCache.Set(keyName, redisUserList, options);
+                }
+                return this.Ok(new { success = true, message = "Get note successful!!!", data = userList });
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
     }

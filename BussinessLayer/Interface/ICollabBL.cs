@@ -14,5 +14,6 @@ namespace BussinessLayer.Interface
         Task<bool> RemoveCollaborator(int userId, int NoteId, int collaboratorId);
         Task<List<RepositoryLayer.Entity.Collab>> GetCollaboratorByUserId(int userId);
         Task<List<RepositoryLayer.Entity.Collab>> GetCollaboratorByNoteId(int userId, int NoteId);
+       Task<List<Collab>> GetCollaboratorByRedisCache();
     }
 }

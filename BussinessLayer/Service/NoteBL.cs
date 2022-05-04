@@ -117,5 +117,18 @@ namespace BussinessLayer.Service
                 throw e;
             }
         }
+        public Task<List<Note>> GetAllNotes_ByRadisCache()
+        {
+            try
+            {
+                return this.noteRL.GetAllNotes_ByRadisCache();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
     }
 }

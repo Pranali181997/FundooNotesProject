@@ -11,6 +11,7 @@ using System.Text;
 using Experimental.System.Messaging;
 using RepositoryLayer.FundooNoteContex;
 using CommonDatabaseLayer;
+using Microsoft.EntityFrameworkCore;
 
 namespace RepositoryLayer.Service
 {
@@ -212,7 +213,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                var result = fundoo.Users.ToList();
+                var result = fundoo.Users.Include(u=>u.label).ToList();
                 return result;
             }
             catch (Exception e)

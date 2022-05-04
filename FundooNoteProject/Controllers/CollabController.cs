@@ -3,11 +3,15 @@ using CommonDatabaseLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 using RepositoryLayer.FundooNoteContex;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FundooNoteProject.Controllers
@@ -18,10 +22,15 @@ namespace FundooNoteProject.Controllers
     {
         ICollabBL collabBL;
         FundooContext fundoo;
-        public CollabController(ICollabBL collabBL, FundooContext fundoo)
+        private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
+        private readonly string key = "Pranali";
+        public CollabController(ICollabBL collabBL, FundooContext fundoo, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.collabBL = collabBL;
             this.fundoo = fundoo;
+            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
         }
         [Authorize]
         [HttpPost("AddCollaborator")]
@@ -80,7 +89,7 @@ namespace FundooNoteProject.Controllers
 
         //HTTP method to handle get collaborator request
         [Authorize]
-        [HttpGet("GetCollaboratorByNoteId")]
+        [HttpGet("GetCollaboratorByUserId")]
         public async Task<ActionResult> GetCollaboratorByUserId()
         {
             try
@@ -125,6 +134,36 @@ namespace FundooNoteProject.Controllers
                     return this.Ok(new { success = true, message = $"Collaborator got successfully", data = result });
                 }
                 return this.BadRequest(new { success = false, message = $"Failed to get collaborator" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpGet("GetAllNotes_ByRadisCache")]
+        public async Task<ActionResult> GetCollaboratorByRedisCache()
+        {
+            try
+            {
+                string serializeCollabList;
+                var collabList = new List<Collab>();
+                var redisCollabList = await distributedCache.GetAsync(key);
+                if (redisCollabList != null)
+                {
+                    serializeCollabList = Encoding.UTF8.GetString(redisCollabList);
+                    collabList = JsonConvert.DeserializeObject<List<Collab>>(serializeCollabList);
+                }
+                else
+                {
+                    collabList = await this.collabBL.GetCollaboratorByRedisCache();
+                    serializeCollabList = JsonConvert.SerializeObject(collabList);
+                    redisCollabList = Encoding.UTF8.GetBytes(serializeCollabList);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                    await distributedCache.SetAsync(key, redisCollabList, options);
+                }
+                return  this.Ok(new { success = true, message = "Get note successful!!!", data = collabList });
             }
             catch (Exception ex)
             {
