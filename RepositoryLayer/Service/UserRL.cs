@@ -35,6 +35,7 @@ namespace RepositoryLayer.Service
                 user1.Email = user.Email;
                 user1.Adress = user.Adress;
                 user1.Password = EncryptPassword(user.Password);
+                user1.ConfirmPassword = EncryptPassword(user.ConfirmPassword);
                 user1.RegisterdDate = DateTime.Now;
                 fundoo.Users.Add(user1);
                 fundoo.SaveChanges();
